@@ -1,0 +1,390 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Unknown </title></head><body>
+<h1 id="cs52-workshops-fancy-css-flitz">CS52 Workshops: Fancy CSS Flitz</h1>
+<p><img alt="" src="https://media.giphy.com/media/ubQOPZPbPPJ7y/giphy.gif" /></p>
+<p>Implementing cool effects with fancy CSS is awesome because it allows you to modernize your design using basic tools that you already know how to use. This can help you convey information more intuitively and efficiently, implement creative user interactions, and add joy to your site! Plus, CSS is faster than costly JavaScript, so animations will run smoothly and won't slow down your site. The tutorial below will lead you through just a few of the cool things you can make happen with pure CSS.</p>
+<h2 id="overview">Overview</h2>
+<p>We are going to craft a tech-themed flitz site to send to our CS crushes. Since we want our crushes to know we're sick coders, we're going to make the site <em>fancy</em> with some crazy cool CSS. We'll add old-school glitch effects to headers, make curly brackets float across the page, show some nerdy pickup lines on animated cards, and hide a secret message that the user can drag to reveal, all with pure CSS! Once you've completed the tutorial, you can substitute your own content and blitz the link to someone to ask for a study date since this is the only date you have enough time to go on.</p>
+<h2 id="setup">Setup</h2>
+<p>Download your own copy of this repo and <code>cd</code> into the <code>template_code</code> folder. It should contain <code>index.html</code>, <code>style.css</code>, and a <code>pixel-heart.png</code>. The index file contains the outline structure and basic content of the flitz page, and the CSS has basic styling done already. You'll be adding to <code>style.css</code> for most of this tutorial. You can run :computer:<code>python -m SimpleHTTPServer 9000</code> to view the non-fancy site on your localhost and to see your progress as you move through the tutorial!</p>
+<p>If you want to see what the complete site should look like, the completed tutorial is hosted <a href="http://flitz-workshop.surge.sh">here</a>.</p>
+<p>:rocket: Make sure to use Chrome for this tutorial! Due to compatibility, you may not get the same effects if you use a different browser.</p>
+<h2 id="step-by-step">Step by Step</h2>
+<h3 id="first-page-glitching-text-and-floating-brackets">First Page: Glitching Text and Floating Brackets</h3>
+<ol>
+<li>Currently, your first page should just display a plain grey background with a green pixel-text message. We'll start by using keyframes to create a glitch animation to apply to this header text. <strong>Keyframes</strong> lets you <strong>define an animation by gradually changing between different sets of styles.</strong> The order is set through percentages, where <code>0%</code> is the start of the animation and <code>100%</code> is the end. This lets you run the same animation at diffferent time scales without having to define a whole new keyframe!</li>
+</ol>
+<p><img alt="" src="https://media.giphy.com/media/pOwfCO6JBMUdvvrbcb/giphy.gif" /></p>
+<ol>
+<li>In your <code>style.css</code>, define a new keyframes animation called <code>glitch-text</code>.</li>
+</ol>
+<p>```css
+  @keyframes glitch-text {</p>
+<p>}
+```</p>
+<ol>
+<li>Within this animation, we will use <code>transform: scale3d</code>, <code>transform: translate3d</code>, and <code>clip-path</code> to make the text appear to "glitch," or briefly display in random, jumping segments.</li>
+<li><code>scale3d(x, y, z)</code> changes the size of the item on a 3D scale. We'll use this to flip the text.</li>
+<li><code>translate3d(x, y, z)</code> moves the item on each argument's axis. We'll use this to shift the text.</li>
+<li>
+<p><code>clip-path: shape(args...)</code> shows only the portion of the item defined by the shape after the colon.
+We'll start with the first set of segments that take up 0% to 10% of the animation.</p>
+</li>
+<li>
+<p>Start by using <code>transform: scale3d</code> and <code>transform: translate3d</code> to flip the text and move it to the left a bit, then we'll add the first <code>clip-path</code> to show only a small rectangular portion of the full text.
+<code>css
+  @keyframes glitch-text {
+      0% {
+          transform: translate3d(-10px, 0, 0) scale3d(-1, -1, 1);
+          clip-path: polygon(0 20%, 100% 20%, 100% 21%, 0 21%);
+      }</code></p>
+</li>
+<li>
+<p>Now add other clip-paths at one-percent increments. The quick succession of different segments to show will give the glitch-y look. Repeating the scale and translate values at 9.9% makes sure the animation holds these changes until it's time to move the text back.
+<code>css
+    2% {
+        clip-path: polygon(0 33%, 100% 33%, 100% 33%, 0 33%);
+    } 4% {
+        clip-path: polygon(0 44%, 100% 44%, 100% 44%, 0 44%);
+    } 5% {
+        clip-path: polygon(0 50%, 100% 50%, 100% 20%, 0 20%);
+    } 6% {
+        clip-path: polygon(0 70%, 100% 70%, 100% 70%, 0 70%);
+    } 7% {
+        clip-path: polygon(0 80%, 100% 80%, 100% 80%, 0 80%);
+    } 8% {
+        clip-path: polygon(0 50%, 100% 50%, 100% 55%, 0 55%);
+    } 9% {
+        clip-path: polygon(0 70%, 100% 70%, 100% 80%, 0 80%);
+    } 9.9% {
+        transform: translate3d(-10px, 0, 0) scale3d(-1, -1, 1);
+    }</code></p>
+</li>
+<li>
+<p>Now use <code>transform: scale3d</code> and <code>transform: translate3d</code> to return the text to its original position, and use <code>clip-path</code> to show the whole text by giving it values for the whole rectangle view. Putting two percentages on one line holds the transformations inside the brackets for this span of the animation.
+<code>css
+    10%, 77% {
+        transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+    }</code></p>
+</li>
+<li>
+<p>The rest of the animation will include another glitch with a ripply side-shift effect. In the code below, the <code>translate3d</code> effect will run from 78% to 80%, so the text will slowly move from 20px to the right back to the original position. As that is happening, two more <code>clip-paths</code> display different segments of the moving text. Finally, the text holds its original position from 80% to 100%, a.k.a. the end of the animation
+ <code>css
+    78% {
+        transform: translate3d(20px, 0, 0);
+        clip-path: polygon(0 50%, 100% 50%, 100% 20%, 0 20%);
+    } 79% {
+        clip-path: polygon(0 70%, 100% 70%, 100% 80%, 0 80%);
+    } 80%, 100% {
+        transform: translate3d(0, 0, 0);
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+    }</code></p>
+</li>
+<li>
+<p>Lastly, you need to apply this affect to the header text. Under the class <code>.glitch-text</code>, define this animation and play with the length of the animation to see how the effect changes. Also, set the <code>animation-iteration-count</code> to be infinite so the glitch plays on a continuous loop.
+<code>css
+    .glitch-text {
+        animation-name: glitch-text;
+        animation-duration: 4s;
+        animation-iteration-count: infinite;
+    }</code></p>
+</li>
+<li>
+<p>If you view your page in localhost, you should see your text glitching out! Playing with the pixel and timing values can make the effect look drastically different, just go with what you think looks good.</p>
+</li>
+<li>
+<p>Now let's work on the falling characters in the background. If you take a look at <code>index.html</code>, you'll see a <code>div</code> with id <code>text-lines</code>, which contains <code>&lt;p&gt;</code> tags of randomly spaced characters (<code>&amp;nbsp</code> is a way to display spaces, since html automatically collapses all spaces). We will use CSS to style and animate these lines to make it look like characters falling in the background.</p>
+</li>
+</ol>
+<p><img alt="" src="https://media.giphy.com/media/gh0vdFfLwOq8uCHZV7/giphy.gif" /></p>
+<ol>
+<li>
+<p>First, let's work on making these characters appear <em>behind</em> the glitch text. The glitch-text header is in the <code>div</code> class <code>.front</code>, and the characters are in the <code>div</code> class <code>.back</code>. We will use <code>z-index</code> to make it look like the characters are underneath the glitch text.
+```css
+    .front {
+      z-index: 2;
+    }</p>
+<p>.back {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+}
+<code>``
+The</code>z-index<code>property only works on elements with a set</code>position<code>property, as we see in</code>.back`.</p>
+</li>
+<li>
+<p>Now, don't panic because we can't see the characters yet. Let's add some styling to them.
+```css
+  .scroll-text-1 {
+      color: white;
+      font-size: 1.5vw;
+      font-family: 'Press Start 2P', cursive;
+  }</p>
+</li>
+</ol>
+<p>.scroll-text-2 {
+      color: white;
+      font-size: 1.5vw;
+      font-family: 'Press Start 2P', cursive;
+    }
+<code>``
+The reason why we have two</code>scroll-text` classes is because later on, we want to have two slightly varied animation speeds to give a little variety to the falling effect. You should now see a bunch of randomly placed characters <em>behind</em> the glitch-text.</p>
+<ol>
+<li>Let's add some style to the class <code>.text-line</code> so we can space the characters out a bit better.
+<code>css
+  #text-lines {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+  }</code></li>
+<li>
+<p>Now, you might be wondering why we chose our <code>flex-direction</code> to be <code>row</code>. This is because we are going restyle the <code>scroll-text</code> so that the characters appear in vertical "strips". Add the following propeties to <code>.scroll-text-1</code> and <code>.scroll-text-2</code>.
+<code>css
+  .scroll-text-1 {
+      ...
+      text-orientation: upright;
+      writing-mode: vertical-rl;
+  }
+  .scroll-text-2 {
+      ...
+      text-orientation: upright;
+      writing-mode: vertical-rl;
+  }</code>
+Great, we've just used a hacky method to make our characters look randomly spaced!</p>
+</li>
+<li>
+<p>Now it's time to add the falling animation. Let's add an <code>animation</code> property to both <code>scroll-text</code> classes.
+<code>css
+  .scroll-text-1 {
+      ...
+      animation: fall1 9s linear infinite;
+  }
+  .scroll-text-2 {
+      ...
+      animation: fall2 13s linear infinite;
+  }</code>
+Notice that we use the shorthand version of the <code>animation</code> property, so the first argument is <code>animation-name</code>, the second is <code>animation-duration</code>, the third is <code>animation-timing-function</code> and the fourth is <code>animation-iteration-count</code>. Also notice that the <code>animation-duration</code> is slightly different for <code>fall1</code> and <code>fall2</code>: this is the variation we talked about earlier. The characters should't move yet, since we haven't added the <code>@@keyframes</code>.</p>
+</li>
+<li>
+<p>So let's add the <code>@keyframes</code> that will actually make the characters move.
+<code>css
+  @keyframes fall1 {
+      0% {
+          transform: translateY(-50vh);
+      }
+      80%, 100% {
+          transform: translateY(100vh);
+      }
+  }
+  @keyframes fall2 {
+      0% {
+          transform: translateY(-100vh);
+      }
+      100% {
+          transform: translateY(100vh);
+      }
+  }</code>
+Let's break this down. <code>0%</code> refers to the beginning of the animation (0% of the way through the frame, if you will), and <code>100%</code> refers to the end of the animation (100% of the way through the frame). So in fall2, for example, we are saying "at the beginning of the frame, translate the text in the y-axis -100vh (so that the characters appear to be off-screen). Then, over the duration specified in the animation, translate the text in the y-axis to 100vh by the end of the frame.</p>
+</li>
+<li>
+<p>Congrats! You should now have "randomly :wink:" falling characters in the background!</p>
+</li>
+</ol>
+<h3 id="second-page-flipping-boxes">Second Page: Flipping Boxes</h3>
+<p><img alt="" src="https://media.giphy.com/media/1yMzrbg2os7OOeidGi/giphy.gif" /></p>
+<ol>
+<li>
+<p>For this part, you should be on the second page with a row of pun cards in the middle. Our goal is to make it so when you hover over the cards, they will flip to the other side to reveal a message!</p>
+</li>
+<li>
+<p>The part we are applying styles to in index.html is <code>pun-flip-section</code>. Each card is a set of nested divs. The outermost div is the <code>card-flip</code>, representing the whole card. Next, <code>card-flip-inner</code> holds both the back and front contents of the card. Finally, <code>card-back</code> and <code>card-front</code> contain the actually text displayed on each side of the card. Keep this in mind as we start editing the css to add some fancy styles.</p>
+</li>
+<li>
+<p>The fist thing we want to do is to set the card width and height and set the transform properties <code>perspective</code> to let the cars flip in 3D. Add the following code to the flipping pun section of your css file.
+<code>css
+  .card-flip {
+    width: 24vw;
+    height: 24vw;
+    perspective: 1000px;
+}</code></p>
+</li>
+<li>
+<p>Now let's position the inner contents of the card and add transition properties to control the timing of the animation. 
+<code>css
+.card-flip-inner {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: transform 1.5s;
+    transform-style: preserve-3d;
+}</code>
+Also, define the transformation for both the card-flip div on hover and the card-flip-innner so the card <em>and</em> the contents flip.
+<code>css
+.card-flip:hover .card-flip-inner, .card-back {
+    transform: rotateY(180deg);
+}</code>
+This will make it so when you hover over a card, it would rotate 180 degrees along its vertical axis. Try <code>rotateX</code> or <code>rotateZ</code> for some other ways to flip the card!</p>
+</li>
+<li>
+<p>Now, let's position the actual text on the card text and hide the rotated side using <code>backface-visibility</code>. Append the following to CSS.</p>
+</li>
+</ol>
+<p><code>css
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    background-color: #000000;
+}</code>
+With that, the cards should flip on hover! Try them out and feel free to put in your own custom messages or even images on the card faces!</p>
+<h3 id="third-page-scrollable-hidden-message">Third Page: Scrollable Hidden Message</h3>
+<p><img alt="" src="https://lh4.googleusercontent.com/32Qgzq7Dbg-_3rG_uVYZZmecRDiDFQxWrFySDIzBW8At52PvzXhHQt_jAQ-0m4BOQxIYjE7uubKD5gmdKWIaB1b6S_FuushzOikn2Fw4" /></p>
+<ol>
+<li>
+<p>Here we'll be working in <code>&lt;div class="hidden-message-section"&gt;</code> where you'll be adding your special flitz message! This page contains two other <code>&lt;div&gt;</code> containers: slider and slides that take care of the hidden message</p>
+</li>
+<li>
+<p>In <code>index.html</code>, add your customized question for the hidden message where it says "Add Text Here" inside of the slides within <code>&lt;div  class="slides"&gt;</code>.
+<code>html
+    &lt;div  id="slide-1"&gt;
+    &lt;p&gt;Scroll Left&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div  id="slide-2"&gt;
+        Add Text Here
+    &lt;/div&gt;
+    &lt;div  id="slide-3"&gt;
+        Add Text Here
+    &lt;/div&gt;
+    &lt;div  id="slide-4"&gt;
+        Add Text Here
+    &lt;/div&gt;
+    &lt;div  id="slide-5"&gt;
+        Add Text Here
+    &lt;/div&gt;</code></p>
+</li>
+<li>
+<p>Now we move on to the <code>.slider</code> and <code>.slides</code> classes, which take care of styling the box for the hidden message. Setting <code>oveflow-x</code> to <code>auto</code> will hide the text outside of the main frame and let the user scroll horizontally to reveal the message!
+```css
+  .slider {
+      width: 40vw;
+      text-align: center;
+  }</p>
+</li>
+</ol>
+<p>.slides {
+      display: flex;
+      overflow-x: auto;
+  }
+```</p>
+<ol>
+<li>
+<p>Finally, under <code>.slides  &gt;  div</code> we take care of styling the different pages inside the hidden message box. Add this into your css:
+<code>css
+  .slides &gt; div {
+      font-family: 'Press Start 2P', cursive;
+      color: #ffffff;
+      font-size: 2vw;
+      flex-shrink: 0;
+      width: 40vw;
+      height: 30vw;
+      background: #000000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }</code></p>
+</li>
+<li>
+<p>Now test out the hidden message box and see if your message appears as you scroll to the left!</p>
+</li>
+</ol>
+<h3 id="fourth-page-hover-effects">Fourth Page: Hover Effects</h3>
+<p><img alt="" src="https://lh4.googleusercontent.com/6jlpJ8J7LXBGdD2oEK25wtgDRsDaxeKVBeSxCiRHksMKq125Ffx1JGLiQ9J2tVU-AGtFn5MCM8_XArCjRjKVsASAK7Gh7irZzmuJAzNQ" /></p>
+<ol>
+<li>
+<p>The last div has three heart-shaped options for your crush to respond with. We are going to animate each option so they know the emotional toll that their answer will have on you.</p>
+</li>
+<li>
+<p>First, we will define two more keyframes animations, one for the shaking and one for the beating. The shaking animation will use the translate and rotate transformations to quickly move the heart in a shaky little circle...</p>
+</li>
+</ol>
+<p><code>css
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}</code>
+and the beating animation will use the scale transformation to pulse the heart. Scaling by 1.1 increases the size of the image by 10%, which produces the beating effect.
+<code>css
+@keyframes beat {
+    0%{transform: scale(1);}
+    50%{transform: scale(1.1);}
+    100%{transform: scale(1);}
+}</code></p>
+<ol>
+<li>We can now apply these effects to the first and second hearts.
+```css</li>
+</ol>
+<h1 id="h1hover">h1:hover {</h1>
+<pre><code>animation: beat .5s ease infinite;
+</code></pre>
+<p>}</p>
+<h1 id="h2hover">h2:hover {</h1>
+<pre><code>animation: shake 0.5s;
+animation-iteration-count: infinite;
+</code></pre>
+<p>}
+```</p>
+<ol>
+<li>Lastly, we want the third heart to flip upside down on hover. We don't need to define an animation for this effect, we can just add in a rotating transformation as a hover effect like this:
+```css</li>
+</ol>
+<h1 id="h3hover">h3:hover {</h1>
+<pre><code>transform: rotate(180deg);
+</code></pre>
+<p>}
+```</p>
+<ol>
+<li>Now all your hearts should animate on hover! To customize your page so that everyone on campus isn't getting the exact same flitz, <strong>try some of the different transformations</strong> found <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/transform">here</a> with more documentation <a href="https://www.w3schools.com/cssref/css3_pr_transform.asp">here</a>! You could also <strong>change the filepath</strong> within the <code>img</code> tag under the <code>heart</code> div to apply these hover effects to different images. May we suggest <a href="https://media.giphy.com/media/6cFcUiCG5eONW/giphy.gif">yes,</a> <a href="https://media.giphy.com/media/6qmOIwxEJnt96/giphy.gif">maybe,</a> and <a href="https://media.giphy.com/media/1zSz5MVw4zKg0/giphy.gif">no</a> gifs?</li>
+</ol>
+<h3 id="bonus">Bonus!</h3>
+<p>Use radio buttons to add a click effect when one of the heart answers is selected! That way your crush can see whcih reply they are selecting. This would be a lot like the radio button menu hack from lab two. Suggestion: change the color of the text or the scale of the image when the heart is clicked.</p>
+<p>Also feel free to change the colors, fonts, and layout to make it your own! Or try applying animations to different elements, like headers or text boxes. Your end result can look completely different from ours, just have fun with it.</p>
+<p><em>Alternative Bonus:</em> Use Surge to host your site and flitz it to a friend. :wink:</p>
+<h2 id="summary">Summary</h2>
+<p><strong>What your site has:</strong>
+<em> [ ] A glitchy text effect by hiding/showing different parts of a header
+</em> [ ] Scrolling code in the background of a screen
+<em> [ ] Cards that flip on hover
+</em> [ ] A hidden message that the user can scroll to reveal
+* [ ] Different, fun hover effects for images</p>
+<p><strong>What you learned:</strong>
+<em> [ ] How to define your own keyframes animations
+</em> [ ] How to add fun hover effects to convey information
+<em> [ ] How to implement fun user interactions
+</em> [ ] Why fancy CSS is useful
+* [ ] When fancy CSS is advantageous to use</p>
+<h2 id="reflection-questions">Reflection Questions</h2>
+<p>:bulb: <em>Don't forget to submit these on Canvas!</em></p>
+<ul>
+<li>[ ] Why use CSS to add effects to your site instead of JavaScript? When might it be better to use JavaScript?</li>
+<li>[ ] What do the percentages within keyframes animations mean? How do you set how long the animation should take to run?</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<p>Tutorials Used:
+<em> https://www.creativebloq.com/how-to/how-to-create-glitch-text-and-image-effects-in-css
+</em> https://stackoverflow.com/questions/4264527/vertical-text-direction
+<em> https://codepen.io/anon/pen/vMgpPB
+</em> https://css-tricks.com/can-get-pretty-far-making-slider-just-html-css/
+* https://codepen.io/edeesims/pen/iGDzk</p>
+</body></html>
